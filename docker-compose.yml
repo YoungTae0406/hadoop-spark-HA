@@ -12,9 +12,7 @@ services:
     hostname: namenode01
     ports:
       - "9098:9870" # namenode web UI
-    volumes:
-      - namenode:/home/yeongtae/hadoop/dfs/name 
-      - namenode:/home/yeongtae/spark/eventLog  
+    
     networks:
       - bridge
 
@@ -24,9 +22,7 @@ services:
     hostname: namenode02
     ports:
       - "9099:9870" # namenode web UI
-    volumes:
-      - namenode02:/home/yeongtae/hadoop/dfs/name # namenode data mount
-      - namenode02:/home/yeongtae/spark/eventLog # spark history log data mount 
+   
     networks:
       - bridge
 
@@ -61,37 +57,24 @@ services:
     <<: *datanode_base
     container_name: datanode01
     hostname: datanode01
-    volumes:
-      - datanode01:/home/yeongtae/hadoop/dfs/data
-      - datanode01:/home/yeongtae/hadoop/yarn/data
-      - namenode01:/home/yeongtae/spark/eventLog
+    
 
   datanode02:
     <<: *datanode_base
     container_name: datanode02
     hostname: datanode02
-    volumes:
-      - datanode02:/home/yeongtae/hadoop/dfs/data
-      - datanode02:/home/yeongtae/hadoop/yarn/data
-      - namenode01:/home/yeongtae/spark/eventLog
+    
 
   datanode03:
     <<: *datanode_base
     container_name: datanode03
     hostname: datanode03
-    volumes:
-      - datanode03:/home/yeongtae/hadoop/dfs/data
-      - datanode03:/home/yeongtae/hadoop/yarn/data
-      - namenode02:/home/yeongtae/spark/eventLog
+    
 
   datanode04:
     <<: *datanode_base
     container_name: datanode04
     hostname: datanode04
-    volumes:
-      - datanode04:/home/yeongtae/hadoop/dfs/data
-      - datanode04:/home/yeongtae/hadoop/yarn/data
-      - namenode02:/home/yeongtae/spark/eventLog
 
   resourcemanager:
     image: resourcemanager
@@ -111,8 +94,7 @@ services:
     depends_on:
       - namenode
       - resourcemanager
-    volumes:
-      - namenode01:/home/yeongtae/spark/eventLog
+      
     networks:
       - bridge
 
@@ -122,13 +104,15 @@ services:
     hostname: zookeeper01
     networks:
       - bridge
-  
+    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
+
   zookeeper02:
     image: zookeeper
     container_name: zookeeper02
     hostname: zookeeper02
     networks:
       - bridge
+    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
 
   zookeeper03:
     image: zookeeper
@@ -136,6 +120,7 @@ services:
     hostname: zookeeper03
     networks:
       - bridge
+    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
 
 volumes:
   namenode:

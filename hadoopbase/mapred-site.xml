@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <configuration>
   <property>
     <name>mapreduce.framework.name</name>
@@ -17,23 +16,4 @@
     <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
   </property>
 </configuration>
-=======
-<configuration>
-  <property>
-    <name>mapreduce.framework.name</name>
-    <value>yarn</value>
-  </property>
-  <property>
-    <name>yarn.app.mapreduce.am.env</name>
-    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
-  </property>
-  <property>
-    <name>mapreduce.map.env</name>
-    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
-  </property>
-  <property>
-    <name>mapreduce.reduce.env</name>
-    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
-  </property>
-</configuration>
->>>>>>> 4cede6ccbe4e1e5f72ae87074f7cb5743dc37eba
+
