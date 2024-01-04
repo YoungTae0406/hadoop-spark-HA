@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://hadoop-cluster:9000/</value> 
+  </property>  
+
+  <property>
+    <name>ha.zookeeper.quorum</name>
+    <value></value> 
+  </property> <!-- 자동 장애 조치를 위해 클러스터 설정-->
+
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/opt/hadoop/dfs/temp</value>
+  </property>
+</configuration>

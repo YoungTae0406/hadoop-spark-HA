@@ -1,0 +1,6 @@
+<configuration>
+  <property>
+    <name>dfs.journalnode.edits.dir</name>
+    <value>/opt/hadoop/dfs/journal</value>
+  </property>
+</configuration>

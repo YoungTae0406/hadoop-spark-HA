@@ -1,0 +1,149 @@
+version: "3.7"
+
+x-datanode_base: &datanode_base
+  image: hadoop-datanode
+  networks:
+    - bridge
+
+services:
+  namenode01:
+    image: hadoop-namenode
+    container_name: namenode01
+    hostname: namenode01
+    ports:
+      - "9098:9870" # namenode web UI
+    volumes:
+      - namenode:/home/yeongtae/hadoop/dfs/name 
+      - namenode:/home/yeongtae/spark/eventLog  
+    networks:
+      - bridge
+
+  namenode02:
+    image: hadoop-namenode
+    container_name: namenode02
+    hostname: namenode02
+    ports:
+      - "9099:9870" # namenode web UI
+    volumes:
+      - namenode02:/home/yeongtae/hadoop/dfs/name # namenode data mount
+      - namenode02:/home/yeongtae/spark/eventLog # spark history log data mount 
+    networks:
+      - bridge
+
+  journalnode01:
+    image: hadoop-journalnode
+    container_name: journal01
+    hostname: journal01
+    ports:
+      - "9100:8480"
+    networks:
+      - bridge
+
+  journalnode02:
+    image: hadoop-journalnode
+    container_name: journal02
+    hostname: journal02
+    ports:
+      - "9101:8480"
+    networks:
+      - bridge
+
+  journalnode03:
+    image: hadoop-journalnode
+    container_name: journal03
+    hostname: journal03
+    ports:
+      - "9102:8480"
+    networks:
+      - bridge
+
+  datanode01:
+    <<: *datanode_base
+    container_name: datanode01
+    hostname: datanode01
+    volumes:
+      - datanode01:/home/yeongtae/hadoop/dfs/data
+      - datanode01:/home/yeongtae/hadoop/yarn/data
+      - namenode01:/home/yeongtae/spark/eventLog
+
+  datanode02:
+    <<: *datanode_base
+    container_name: datanode02
+    hostname: datanode02
+    volumes:
+      - datanode02:/home/yeongtae/hadoop/dfs/data
+      - datanode02:/home/yeongtae/hadoop/yarn/data
+      - namenode01:/home/yeongtae/spark/eventLog
+
+  datanode03:
+    <<: *datanode_base
+    container_name: datanode03
+    hostname: datanode03
+    volumes:
+      - datanode03:/home/yeongtae/hadoop/dfs/data
+      - datanode03:/home/yeongtae/hadoop/yarn/data
+      - namenode02:/home/yeongtae/spark/eventLog
+
+  datanode04:
+    <<: *datanode_base
+    container_name: datanode04
+    hostname: datanode04
+    volumes:
+      - datanode04:/home/yeongtae/hadoop/dfs/data
+      - datanode04:/home/yeongtae/hadoop/yarn/data
+      - namenode02:/home/yeongtae/spark/eventLog
+
+  resourcemanager:
+    image: resourcemanager
+    container_name: resourcemanager
+    hostname: resourcemanager
+    ports:
+      - "9099:8088"
+    networks:
+      - bridge
+  
+  sparkhistoryserver:
+    image: spark-historyserver
+    container_name: sparkhistoryserver
+    hostname: sparkhistoryserver
+    ports:
+      - "9093:18080"
+    depends_on:
+      - namenode
+      - resourcemanager
+    volumes:
+      - namenode01:/home/yeongtae/spark/eventLog
+    networks:
+      - bridge
+
+  zookeeper01:
+    image: zookeeper
+    container_name: zookeeper01
+    hostname: zookeeper01
+    networks:
+      - bridge
+  
+  zookeeper02:
+    image: zookeeper
+    container_name: zookeeper02
+    hostname: zookeeper02
+    networks:
+      - bridge
+
+  zookeeper03:
+    image: zookeeper
+    container_name: zookeeper03
+    hostname: zookeeper03
+    networks:
+      - bridge
+
+volumes:
+  namenode:
+  datanode01:
+  datanode02:
+  datanode03:
+  datanode04:
+
+networks:
+  bridge:
+

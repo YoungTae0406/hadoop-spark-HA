@@ -1,0 +1,21 @@
+FROM hadoop-base
+
+RUN mkdir /opt/zookeeper && \\
+    cd /opt/zookeeper && \\
+    wget <https://mirror.navercorp.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz> &&\\
+    tar xvfz apache-zookeeper-3.6.3-bin.tar.gz && \\
+    ln -s /opt/zookeeper/apache-zookeeper-3.6.3-bin /opt/zookeeper/dfs && \\
+    mkdir dfs/data
+
+ENV ZOOKEEPER_HOME = /opt/zookeeper/dfs
+ENV PATH=$PATH:$ZOOKEEPER_HOME/bin
+
+COPY zoo.cfg /opt/zookeeper/dfs/conf 
+COPY core-site.xml $HADOOP_HOME/etc/hadoop
+COPY hdfs-site.xml $HADOOP_HOME/etc/hadoop
+COPY yarn-site.xml $HADOOP_HOME/etc/hadoop
+COPY mapred-site.xml $HADOOP_HOME/etc/hadoop 
+
+RUN chmod 700 /start.sh
+
+ENTRYPOINT ["/bin/bash"]

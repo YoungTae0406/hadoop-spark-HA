@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name> <!--메타데이터 저장 경로-->
+    <value>file:///opt/hadoop/current/name</value>
+  </property>
+  <property>
+    <name>dfs.blocksize</name>
+    <value>134217728</value>
+  </property>
+
+
+  <property>
+    <name>dfs.namenode.shared.edits.dir</name>
+    <value>qjournal://journalnode01:8485;journalnode02:8485;journalnode03:8485/hadoop-cluster; 
+    <!--journalnode URI 주소 적거야함-->
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.hadoop-cluster</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property> <!--client가 active namenode에 연결하는 데 사용하는 java 클래스-->
+  
+  <!--zookeeper-->
+  <property>
+    <name>dfs.ha.automatic-failover.enabled</name>
+    <value>true</value> <!--자동 장애 조치 구성-->
+  </property>
+  
+
+
+  <!--HA config-->
+  <property>
+    <name>dfs.nameservices</name> <!-- 여기에 federation을 할 nameservice를 추가해야함-->
+    <value>hadoop-cluster</value> <!--namespace를 정의-->
+  </property>
+  <property>
+    <name>dfs.ha.namenodes.hadoop-cluster</name>
+    <value>namenode01, namenode02</value>
+  </property> <!-- namenode의 active/standby-->
+
+  <!--rpc-address -->
+  <property>
+    <name>dfs.namenode.rpc-address.hadoop-cluster.namenode1</name>
+    <value>namenode01:8020</value>
+    <!--dfs의 메타데이터 작업을 위한 통신채널-->
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.hadoop-cluster.namenode2</name>
+    <value>namenode02:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.hadoop-cluster.namenode1</name>
+    <value>master01:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.hadoop-cluster.namenode2</name>
+    <value>master02:9870</value>
+  </property>
+  <!--
+  <property>
+    <name>dfs.ha.fencing.methods</name>
+    <value>sshfence
+        shell(/bin/true)
+    </value>
+  </property>
+  <property>
+      <name>dfs.ha.fencing.ssh.private-key-files</name>
+      <value>~/.ssh/id_dsa</value>
+  </property>
+  -->
+  <property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+  
+</configuration>

@@ -1,0 +1,16 @@
+<configuration>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///opt/hadoop/dfs/data</value>
+  </property>
+  <property>
+    <name>dfs.block.size</name>
+    <value>134217728</value>
+  </property>  
+  <property>
+    <name>dfs.datanode.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+  <!--클라이언트와 다른 데이터 노드들은 데이터 노드를 식별할 때 IP주소 대신
+  호스트 이름을 사용하게끔 했음-->
+</configuration>
