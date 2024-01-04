@@ -8,10 +8,15 @@
     <value>org.apache.hadoop.mapred.ShuffleHandler</value>
  </property>
  
- <property>
-    <name>yarn.resourcemanager.hostname</name>
-    <value>resourcemanager</value>
- </property>
+<property>
+   <name>yarn.nodemanager.vmem-check-enabled</name>
+   <value>false</value>
+   </property>
+<property>
+   <name>yarn.nodemanager.vmem-pmem-ratio</name>
+   <value>5</value>
+</property>
+
  <property>
     <name>yarn.nodemanager.local-dirs</name>
     <value>/opt/hadoop/yarn/data</value>
@@ -21,30 +26,47 @@
 	 <value>/opt/hadoop/yarn/data</value>
  </property>
  
+ <!--yarn federation-->
 <property>
    <name>yarn.federation.enabled</name>
    <value>true</value>
 </property>
 
-
- <property>
-    <name>yarn.timeline-service.enabled</name>
-    <value>true</value>
- </property>
- <property>
-     <name>yarn.resourcemanager.system-metrics-publisher.enabled</name>
-     <value>true</value>
- </property>
- <property>
-     <name>yarn.timeline-service.generic-application-history.enabled</name>
-     <value>true</value>
- </property>
- <property>
-     <name>yarn.timeline-service.leveldb-timeline-store.path</name>
-     <value>/opt/hadoop/yarn/timeline</value>
- </property>
- <property>
-     <name>yarn.timeline-service.hostname</name>
-     <value>yarntimelineserver</value>
- </property>
+<!--yarn HA-->
+<property>
+   <name>yarn.resourcemanager.ha.enabled</name>
+   <value>true</value>
+</property>
+<property>
+   <name>yarn.resourcemanager.cluster-id</name>
+   <value>rm-cluster</value>
+</property>
+<property> 
+   <name>yarn.resourcemanager.ha.rm-ids</name>
+   <value>rm1,rm2</value>
+</property>
+<property>  <!--호스트 이름 지정-->
+   <name>yarn.resourcemanager.hostname.rm1</name>
+   <value>resourcemanager01</value>
+</property>
+<property>
+   <name>yarn.resourcemanager.hostname.rm2</name>
+   <value>resourcemanager02</value>
+</property>
+<property>
+   <name>yarn.resourcemanager.webapp.address.rm1</name>
+   <value>resourcemanager01:8088</value>
+</property>
+<property>
+   <name>yarn.resourcemanager.webapp.address.rm2</name>
+   <value>resourcemanager02:8088</value>
+</property>
+<property>
+   <name>yarn.resourcemanager.zk-address</name>
+   <value>zookeeper01:2181,zookeeper02:2181,zookeeper03:2181</value>
+</property>
+<property> <!--YARN rm의 state store의 위치를 설정함-->
+   <name>yarn.resourcemanager.fs.state-store.uri</name>
+   <value>/opt/hadoop/yarn/system/rmstore</value>
+</property> <!--저 경로에 상태 정보가 지속적으로 저장됨.-->
 </configuration>

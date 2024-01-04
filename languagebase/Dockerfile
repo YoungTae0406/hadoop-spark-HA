@@ -3,15 +3,18 @@ FROM centos
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-RUN \\
-    yum update -y && \\
-    yum install net-tools -y && \\
-    yum install vim-enhanced -y && \\
-    yum install wget -y && \\
-    yum install openssh-server openssh-clients openssh-askpass -y && \\
-    yum install java-1.8.0-openjdk-devel.x86_64 -y && \\
-    mkdir /opt/jdk && \\
-    ln -s /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.332.b09-1.el7_9.x86_64 /opt/jdk/current
+RUN yum update -y && \
+yum install net-tools -y && \
+yum install vim-enhanced -y && \
+yum install wget -y && \
+yum install openssh-server openssh-clients openssh-askpass -y && \
+yum install java-1.8.0-openjdk-devel.x86_64 -y && \
+mkdir /opt/jdk && \
+ln -s /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.332.b09-1.el7_9.x86_64 /opt/jdk/current && \
+yum install -y gcc make openssl-devel bzip2-devel libffi-devel
+
+ENV PYTHON_VERSION=3.7.6
+ENV PYTHON_URL=https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz 
 
 RUN wget $PYTHON_URL
 RUN tar -xvzf Python-$PYTHON_VERSION.tgz && rm Python-$PYTHON_VERSION.tgz

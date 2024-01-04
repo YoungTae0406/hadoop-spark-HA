@@ -76,10 +76,19 @@ services:
     container_name: datanode04
     hostname: datanode04
 
-  resourcemanager:
+  resourcemanager01:
     image: resourcemanager
-    container_name: resourcemanager
-    hostname: resourcemanager
+    container_name: resourcemanager01
+    hostname: resourcemanager01
+    ports:
+      - "9099:8088"
+    networks:
+      - bridge
+
+  resourcemanager02:
+    image: resourcemanager
+    container_name: resourcemanager02
+    hostname: resourcemanager02
     ports:
       - "9099:8088"
     networks:
@@ -92,9 +101,10 @@ services:
     ports:
       - "9093:18080"
     depends_on:
-      - namenode
-      - resourcemanager
-      
+      - namenode01
+      - namenode02
+      - resourcemanager01
+      - resourcemanager02
     networks:
       - bridge
 

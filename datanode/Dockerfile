@@ -5,7 +5,6 @@ HEALTHCHECK CMD curl -f http://localhost:9864/ || exit 1
 ADD hdfs-site.xml $HADOOP_CONF_DIR
 
 RUN mkdir $HADOOP_HOME/dfs/data
-
 RUN mkdir -p $HADOOP_HOME/yarn/data
 
 # 9864 : datanode web ui port
