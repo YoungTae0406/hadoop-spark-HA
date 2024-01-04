@@ -1,4 +1,5 @@
 #!/bin/bash
+sed -i 's/\r$//' docker-build.sh
 
 docker-compose down
 
