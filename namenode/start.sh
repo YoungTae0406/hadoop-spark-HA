@@ -1,15 +1,23 @@
 #!/bin/bash
-# 네임스페이스 디렉토리를 입력받아서 
-NAME_DIR=$1
-echo $NAME_DIR
-# 비어있지 않다면 이미 포맷된 것이므로 건너뛰고
-if [ "$(ls -A $NAME_DIR)" ]; then
-  echo "NameNode is already formatted."
-# 비어있다면 포맷을 진행
-else
-  echo "Format NameNode."
-  $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode -format
+NAMENODE_DIR=/opt/hadoop/dfs/name
+
+NAMENODE_ROLE=${1:-"active"} # 기본값을 active로 설정
+
+# Active NameNode 포맷
+if [ "$NAMENODE_ROLE" == "active" ]; then
+    if [ ! "$(ls -A $NAMENODE_DIR)" ]; then
+        echo "Y" | hdfs namenode -format
+        $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
+    else
+        echo "NameNode directory is already formatted."
+    fi
 fi
-# NameNode 기동
-$HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
-$HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR zkfc
+
+if [ "$NAMENODE_ROLE" == "standby" ]; then
+  sleep 15
+  hdfs namenode -bootstrapStandby
+  $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
+fi
+
+sleep 10
+$HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR zkfc -formatZK

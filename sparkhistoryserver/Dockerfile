@@ -9,4 +9,4 @@ EXPOSE 18080
 COPY start.sh /start.sh
 RUN chmod 700 /start.sh
 
-CMD ["/start.sh"]
+ENTRYPOINT ["bash","-c","/start.sh"]

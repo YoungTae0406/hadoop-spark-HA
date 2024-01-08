@@ -1,5 +1,4 @@
 #!/bin/bash
-sed -i 's/\r$//' docker-build.sh
 docker-compose down
 docker build -t language-base ./languagebase
 docker build -t hadoop-base ./hadoopbase
@@ -9,5 +8,6 @@ docker build -t hadoop-datanode ./datanode
 docker build -t resourcemanager ./resourcemanager
 docker build -t spark-historyserver ./sparkhistoryserver
 docker build -t hadoop-journalnode  ./journalnode
-docker build -t zookeeper ./zookeeper
+docker build -t hadoop-zookeeper ./zookeeper
 docker-compose up -d
+

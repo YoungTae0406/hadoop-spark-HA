@@ -10,9 +10,13 @@ services:
     image: hadoop-namenode
     container_name: namenode01
     hostname: namenode01
+    command: ["/start.sh", "active"]
     ports:
-      - "9098:9870" # namenode web UI
-    
+      - "9200:9870" # namenode web UI
+    depends_on:
+      - journal01
+      - journal02
+      - journal03
     networks:
       - bridge
 
@@ -20,36 +24,84 @@ services:
     image: hadoop-namenode
     container_name: namenode02
     hostname: namenode02
+    command: ["/start.sh", "standby"]
     ports:
-      - "9099:9870" # namenode web UI
-   
+      - "9201:9870" # namenode web UI
+    depends_on:
+      - journal01
+      - journal02
+      - journal03
+      - namenode01
     networks:
       - bridge
 
-  journalnode01:
+  spark-master:
+    image: hadoop-spark-base
+    ports:
+      - "9050:8080"
+      - "7077:7077"
+    
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+
+  spark-worker-1:
+    image: hadoop-spark-base
+    ports:
+      - "9051:8080"
+      - "7000:7077"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-1
+
+  spark-worker-2:
+    image: hadoop-spark-base
+    ports:
+      - "9052:8080"
+      - "7001:7077"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-2
+
+
+  journal01:
     image: hadoop-journalnode
     container_name: journal01
     hostname: journal01
     ports:
-      - "9100:8480"
+      - "9300:8480"
     networks:
       - bridge
 
-  journalnode02:
+  journal02:
     image: hadoop-journalnode
     container_name: journal02
     hostname: journal02
     ports:
-      - "9101:8480"
+      - "9301:8480"
     networks:
       - bridge
 
-  journalnode03:
+  journal03:
     image: hadoop-journalnode
     container_name: journal03
     hostname: journal03
     ports:
-      - "9102:8480"
+      - "9302:8480"
     networks:
       - bridge
 
@@ -81,7 +133,7 @@ services:
     container_name: resourcemanager01
     hostname: resourcemanager01
     ports:
-      - "9099:8088"
+      - "9100:8088"
     networks:
       - bridge
 
@@ -90,7 +142,7 @@ services:
     container_name: resourcemanager02
     hostname: resourcemanager02
     ports:
-      - "9099:8088"
+      - "9101:8088"
     networks:
       - bridge
   
@@ -107,14 +159,20 @@ services:
       - resourcemanager02
     networks:
       - bridge
-
+  
   zookeeper01:
     image: zookeeper
     container_name: zookeeper01
     hostname: zookeeper01
+    ports :
+      - 2181:2181
     networks:
       - bridge
-    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zookeeper02:2888:3888;2181 server.3=zookeeper03:2888:3888;2181
+    restart: always
+    command: zkServer.sh start-foreground
 
   zookeeper02:
     image: zookeeper
@@ -122,7 +180,14 @@ services:
     hostname: zookeeper02
     networks:
       - bridge
-    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zookeeper01:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zookeeper03:2888:3888;2181
+      
+    restart: always
+    command: zkServer.sh start-foreground
 
   zookeeper03:
     image: zookeeper
@@ -130,7 +195,13 @@ services:
     hostname: zookeeper03
     networks:
       - bridge
-    command: bash -c 'echo 1 > /opt/zookeeper/dfs/data/myid && zkServer.sh start-foreground'
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zookeeper01:2888:3888;2181 server.2=zookeeper02:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+    restart: always
+    command: zkServer.sh start-foreground
 
 volumes:
   namenode:
