@@ -9,5 +9,5 @@ RUN mkdir /opt/zookeeper && \
 ENV ZOOKEEPER_HOME=/opt/zookeeper/dfs
 ENV PATH=$PATH:$ZOOKEEPER_HOME/bin
 
-#COPY zoo.cfg /opt/zookeeper/dfs/conf
-#CMD $ZOOKEEPER_HOME/bin/zkServer.sh start
+COPY zoo.cfg /opt/zookeeper/dfs/conf
+CMD $ZOOKEEPER_HOME/bin/zkServer.sh start

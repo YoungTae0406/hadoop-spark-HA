@@ -17,6 +17,9 @@ services:
       - journal01
       - journal02
       - journal03
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
     networks:
       - bridge
 
@@ -31,7 +34,9 @@ services:
       - journal01
       - journal02
       - journal03
-      - namenode01
+      - zookeeper01
+      - zookeeper02
+      - zookeeper03
     networks:
       - bridge
 
@@ -173,6 +178,7 @@ services:
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zookeeper02:2888:3888;2181 server.3=zookeeper03:2888:3888;2181
     restart: always
     command: zkServer.sh start-foreground
+    
 
   zookeeper02:
     image: zookeeper
