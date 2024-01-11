@@ -9,6 +9,7 @@ RUN wget $SAPRK_URL
 RUN tar -xvzf $SPARK_FILE_NAME.tgz && rm $SPARK_FILE_NAME.tgz
 RUN mv $SPARK_FILE_NAME /opt
 RUN ln -s /opt/$SPARK_FILE_NAME /opt/spark
+RUN apt-get install -y rsync
 
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin

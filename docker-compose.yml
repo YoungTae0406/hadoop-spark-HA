@@ -4,6 +4,7 @@ x-datanode_base: &datanode_base
   image: hadoop-datanode
   networks:
     - bridge
+  restart: on-failure:3
 
 services:
   namenode01:
@@ -14,15 +15,27 @@ services:
     ports:
       - "9200:9870" # namenode web UI
     depends_on:
-      - journal01
-      - journal02
-      - journal03
-      - zookeeper01
-      - zookeeper02
-      - zookeeper03
+      journal01:
+        condition: service_healthy
+      journal02:
+        condition: service_healthy
+      journal03:
+        condition: service_healthy
+      zookeeper01:
+        condition: service_healthy
+      zookeeper02:
+        condition: service_healthy
+      zookeeper03:
+        condition: service_healthy
     networks:
       - bridge
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
+    
   namenode02:
     image: hadoop-namenode
     container_name: namenode02
@@ -31,17 +44,33 @@ services:
     ports:
       - "9201:9870" # namenode web UI
     depends_on:
-      - journal01
-      - journal02
-      - journal03
-      - zookeeper01
-      - zookeeper02
-      - zookeeper03
+      journal01:
+        condition: service_healthy
+      journal02:
+        condition: service_healthy
+      journal03:
+        condition: service_healthy
+      zookeeper01:
+        condition: service_healthy
+      zookeeper02:
+        condition: service_healthy
+      zookeeper03:
+        condition: service_healthy
+      namenode01:
+        condition: service_healthy
     networks:
       - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
 
   spark-master:
     image: hadoop-spark-base
+    container_name: spark-master01
+    hostname: spark-master01
     ports:
       - "9050:8080"
       - "7077:7077"
@@ -52,6 +81,8 @@ services:
 
   spark-worker-1:
     image: hadoop-spark-base
+    container_name: spark-worker01
+    hostname: spark-worker01
     ports:
       - "9051:8080"
       - "7000:7077"
@@ -68,6 +99,8 @@ services:
 
   spark-worker-2:
     image: hadoop-spark-base
+    container_name: spark-worker02
+    hostname: spark-worker02
     ports:
       - "9052:8080"
       - "7001:7077"
@@ -91,6 +124,7 @@ services:
       - "9300:8480"
     networks:
       - bridge
+    restart: on-failure:3
 
   journal02:
     image: hadoop-journalnode
@@ -100,6 +134,7 @@ services:
       - "9301:8480"
     networks:
       - bridge
+    restart: on-failure:3
 
   journal03:
     image: hadoop-journalnode
@@ -109,29 +144,36 @@ services:
       - "9302:8480"
     networks:
       - bridge
+    restart: on-failure:3
 
   datanode01:
     <<: *datanode_base
     container_name: datanode01
     hostname: datanode01
+    ports:
+      - "8900:9864"
     
 
   datanode02:
     <<: *datanode_base
     container_name: datanode02
     hostname: datanode02
-    
+    ports:
+      - "8901:9864"
 
   datanode03:
     <<: *datanode_base
     container_name: datanode03
     hostname: datanode03
-    
+    ports:
+      - "8902:9864"
 
   datanode04:
     <<: *datanode_base
     container_name: datanode04
     hostname: datanode04
+    ports:
+      - "8903:9864"
 
   resourcemanager01:
     image: resourcemanager
@@ -141,6 +183,12 @@ services:
       - "9100:8088"
     networks:
       - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 15s
 
   resourcemanager02:
     image: resourcemanager
@@ -150,6 +198,12 @@ services:
       - "9101:8088"
     networks:
       - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+      start_period: 15s
   
   sparkhistoryserver:
     image: spark-historyserver
@@ -166,7 +220,7 @@ services:
       - bridge
   
   zookeeper01:
-    image: zookeeper
+    image: hadoop-zookeeper
     container_name: zookeeper01
     hostname: zookeeper01
     ports :
@@ -176,12 +230,12 @@ services:
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zookeeper02:2888:3888;2181 server.3=zookeeper03:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: ruok, stat, mntr
     restart: always
     command: zkServer.sh start-foreground
     
-
   zookeeper02:
-    image: zookeeper
+    image: hadoop-zookeeper
     container_name: zookeeper02
     hostname: zookeeper02
     networks:
@@ -191,12 +245,12 @@ services:
     environment:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zookeeper01:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zookeeper03:2888:3888;2181
-      
+      ZOO_4LW_COMMANDS_WHITELIST: ruok, stat, mntr
     restart: always
     command: zkServer.sh start-foreground
 
   zookeeper03:
-    image: zookeeper
+    image: hadoop-zookeeper
     container_name: zookeeper03
     hostname: zookeeper03
     networks:
@@ -206,9 +260,10 @@ services:
     environment:
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zookeeper01:2888:3888;2181 server.2=zookeeper02:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: ruok, stat, mntr
     restart: always
     command: zkServer.sh start-foreground
-
+    
 volumes:
   namenode:
   datanode01:

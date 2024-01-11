@@ -1,13 +1,19 @@
-FROM hadoop-base
-RUN mkdir /opt/zookeeper && \
-    cd /opt/zookeeper && \
-    wget https://mirror.navercorp.com/apache/zookeeper/zookeeper-3.8.3/apache-zookeeper-3.8.3-bin.tar.gz &&\
-    tar xvfz apache-zookeeper-3.8.3-bin.tar.gz && \
-    ln -s /opt/zookeeper/apache-zookeeper-3.8.3-bin /opt/zookeeper/dfs && \
-    mkdir dfs/data
+FROM zookeeper
 
-ENV ZOOKEEPER_HOME=/opt/zookeeper/dfs
-ENV PATH=$PATH:$ZOOKEEPER_HOME/bin
+HEALTHCHECK CMD echo ruok | nc localhost 2181 | grep imok || exit 1
+# interval : 30s
+RUN apt-get update && \
+    apt-get install -y vim
 
-COPY zoo.cfg /opt/zookeeper/dfs/conf
-CMD $ZOOKEEPER_HOME/bin/zkServer.sh start
+#RUN mkdir /opt/zookeeper && \
+#    cd /opt/zookeeper && \
+#    wget https://mirror.navercorp.com/apache/zookeeper/zookeeper-3.8.3/apache-zookeeper-3.8.3-bin.tar.gz &&\
+#    tar xvfz apache-zookeeper-3.8.3-bin.tar.gz && \
+#    ln -s /opt/zookeeper/apache-zookeeper-3.8.3-bin /opt/zookeeper/dfs && \
+#    mkdir dfs/data
+
+#ENV ZOOKEEPER_HOME=/opt/zookeeper/dfs
+#ENV PATH=$PATH:$ZOOKEEPER_HOME/bin
+
+#COPY zoo.cfg /opt/zookeeper/dfs/conf
+#CMD $ZOOKEEPER_HOME/bin/zkServer.sh start

@@ -2,6 +2,7 @@
 NAMENODE_DIR=/opt/hadoop/dfs/name
 NAMENODE_ROLE=$1 
 
+echo $NAMENODE_ROLE
 check_and_restart_zkfc() {
     if ! jps | grep -q "DFSZKFailoverController" ; then
         $HADOOP_HOME/bin/hdfs --daemon start zkfc
@@ -9,19 +10,11 @@ check_and_restart_zkfc() {
         echo "ZKFC is running."
     fi
 }
-#touch /home/temp.log
-#chmod +w /home/temp.log
-#echo "Starting ZKFC...1" >> /home/temp.log
 
-sleep 10
 if [ "$NAMENODE_ROLE" == "active" ]; then
   hdfs zkfc -formatZK
 fi
-if [ "$NAMENODE_ROLE" == "standby" ]; then
-  sleep 5
-fi
 
-#echo "Starting ZKFC...9" >> /home/temp.log
 # Active NameNode 포맷
 if [ "$NAMENODE_ROLE" == "active" ]; then
     if [ ! "$(ls -A $NAMENODE_DIR)" ]; then
@@ -33,7 +26,7 @@ if [ "$NAMENODE_ROLE" == "active" ]; then
         echo "NameNode directory is already formatted." >> /home/temp.log
     fi
 fi
-#echo "Starting ZKFC..6" >> /home/temp.log
+
 if [ "$NAMENODE_ROLE" == "standby" ]; then
   sleep 10
   hdfs namenode -bootstrapStandby

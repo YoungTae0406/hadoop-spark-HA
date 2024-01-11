@@ -1,6 +1,6 @@
 FROM hadoop-base
 
-HEALTHCHECK CMD curl -f http://namenode:9870/ || exit 1
+#HEALTHCHECK CMD curl -f http://localhost:9870/ || exit 1
 
 # FsImage, EditLog 파일 경로
 # FsImage : block replication 개수를 mapping 시켜놓은 정보
