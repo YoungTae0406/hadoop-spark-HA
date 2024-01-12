@@ -1,6 +1,6 @@
 FROM hadoop-spark-base
 
-HEALTHCHECK CMD curl -f http://localhost:18080/ || exit 1
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:18080/ || exit 1
 
 # 18080 : spark history의 웹 UI 포트.
 

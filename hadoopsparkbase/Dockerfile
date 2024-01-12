@@ -14,15 +14,13 @@ RUN apt-get install -y rsync
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
 
-WORKDIR /opt/spark
-
 ENV SPARK_MASTER_PORT=7077 \
 SPARK_MASTER_WEBUI_PORT=8080 \
+SPARK_WORKER_PORT=7000 \
+SPARK_WORKER_WEBUI_PORT=8080 \
 SPARK_LOG_DIR=/opt/spark/logs \
 SPARK_MASTER_LOG=/opt/spark/logs/spark-master.out \
 SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
-SPARK_WORKER_WEBUI_PORT=8080 \
-SPARK_WORKER_PORT=7000 \
 SPARK_MASTER="spark://spark-master:7077" \
 SPARK_WORKLOAD="master"
 # MASTER_PORT : 마스터 노드가 클러스터 통신을 위해 사용하는 포트
@@ -35,10 +33,13 @@ SPARK_WORKLOAD="master"
 EXPOSE 8080 7077 7000
 
 RUN mkdir -p $SPARK_LOG_DIR && \
+mkdir -p /opt/spark/eventLog && \
 touch $SPARK_MASTER_LOG && \
 touch $SPARK_WORKER_LOG && \
 ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
+
+HEALTHCHECK --interval=30s --timeout=20s --start-period=15s --retries=5 CMD curl -f http://localhost:8080/
 
 # spark config file
 ADD spark-defaults.conf $SPARK_HOME/conf

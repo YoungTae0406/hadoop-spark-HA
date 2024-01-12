@@ -1,10 +1,9 @@
-명령어
-
-namenode Service State 확인 : hdfs haadmin -getAllServiceState
-Standby -> Active : hdfs haadmin -transitionToActive nn1 --forcemanual
-Active -> Standby : hdfs haadmin -transitionToStandby nn2 --forcemanual
-namenode가 클러스터와 통신하는지 확인 : hdfs dfsadmin -report
-RM 상태 확인 : yarn rmadmin -getAllServiceState
+- 하둡 명령어
+    - namenode Service State 확인 : hdfs haadmin -getAllServiceState
+    - Standby -> Active : hdfs haadmin -transitionToActive nn1 --forcemanual
+    - Active -> Standby : hdfs haadmin -transitionToStandby nn2 --forcemanual
+    - namenode가 클러스터와 통신하는지 확인 : hdfs dfsadmin -report
+    - RM 상태 확인 : yarn rmadmin -getAllServiceState
 
 $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
 이렇게 쓰여진 명령어와
@@ -12,12 +11,10 @@ $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
 이런 형식으로 쓰여진 명령어의 차이
 전자는 쉘 세션과 연결되어 foreground에서 실행된다. 
 따라서 쉘 세션이 종료하면 그와 연결된 프로세스도 함께 종료된다.
-
 후자는 background에서 실행되고, 쉘 세션의 종료와 무관하게 계속 실행된다. 
 tail -f /dev/null
-
-스파크 명령어
-클러스터 모드로 실행 : spark-submit --master yarn --deploy-mode cluster [다른 옵션들] [애플리케이션 JAR 또는 Python 파일]
+- 스파크 명령어
+    - 클러스터 모드로 실행 : spark-submit --master yarn --deploy-mode cluster [다른 옵션들] [애플리케이션 JAR 또는 Python 파일]
 
 - Hadoop 서비스들이 사용하는 기본 웹 UI 포트
     - NameNode: 9870 (HTTP), 9871 (HTTPS)
@@ -33,7 +30,6 @@ tail -f /dev/null
     - Spark MASTER_PORT : 7077
     - Spark MASTER_WEBUI_PORT : 8080
     - Spark WORKER_PORT : 7000
-
 - 도커컴포즈에서 설정한 웹 UI 포트
     - namenode01 9200
     - namenode02 9201
