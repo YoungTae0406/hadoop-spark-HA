@@ -15,6 +15,13 @@ $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
 tail -f /dev/null
 - 스파크 명령어
     - 클러스터 모드로 실행 : spark-submit --master yarn --deploy-mode cluster [다른 옵션들] [애플리케이션 JAR 또는 Python 파일]
+    다른 옵션들에는 --conf 여기서는 spark.executor.memory나 spark.driver.memory 등의 속성을 설정할 수 있다.
+    --executor-memory 4g
+    --executor-cores 2
+    --num-executors 10 (yarn에서만)
+    --name : Spark UI에 표시될 애플리케이션의 이름을 지정
+    --driver-memory
+    --py-files 
 
 - Hadoop 서비스들이 사용하는 기본 웹 UI 포트
     - NameNode: 9870 (HTTP), 9871 (HTTPS)

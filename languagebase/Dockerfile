@@ -12,11 +12,11 @@ RUN apt-get update && \
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH=$PATH:JAVA_HOME/bin
-ENV PYTHON_VERSION=3.7.6
+ENV PYTHON_VERSION=3.10.4
 ENV PYTHON_URL=https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz 
 
 RUN wget $PYTHON_URL
 RUN tar -xvzf Python-$PYTHON_VERSION.tgz && rm Python-$PYTHON_VERSION.tgz
-RUN cd Python-$PYTHON_VERSION && ./configure --enable-optimizations && make altinstall
+RUN cd Python-$PYTHON_VERSION && ./configure --enable-optimizations && make -j $(nproc) altinstall
 
 

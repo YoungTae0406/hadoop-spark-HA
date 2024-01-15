@@ -9,5 +9,7 @@ docker build -t resourcemanager ./resourcemanager
 docker build -t spark-historyserver ./sparkhistoryserver
 docker build -t hadoop-journalnode  ./journalnode
 docker build -t hadoop-zookeeper ./zookeeper
+docker build -t yarntimeline ./yarntimelineserver
+docker build -t zeppelin ./zeppelin
 docker-compose up -d
 
