@@ -1,9 +1,10 @@
 FROM zookeeper
 
-HEALTHCHECK CMD echo ruok | nc localhost 2181 | grep imok || exit 1
+HEALTHCHECK --interval=60s CMD echo ruok | nc localhost 2181 | grep imok || exit 1
 # interval : 30s
 RUN apt-get update && \
     apt-get install -y vim
+
 
 #RUN mkdir /opt/zookeeper && \
 #    cd /opt/zookeeper && \

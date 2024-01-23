@@ -1,6 +1,6 @@
 FROM hadoop-base
 
-#HEALTHCHECK CMD curl -f http://localhost:8088/ || exit 1
+HEALTHCHECK --interval=30s --timeout=20s --retries=7 --start-period=15s CMD curl -f http://localhost:8088/
 
 ADD start.sh /start.sh
 RUN chmod a+x /start.sh

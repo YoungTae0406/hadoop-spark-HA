@@ -1,0 +1,100 @@
+version: "3.7"
+
+x-datanode_base: &datanode_base
+  image: hadoop-datanode
+  networks:
+    - bridge
+  restart: on-failure:3
+
+services:
+  datanode02:
+    <<: *datanode_base
+    container_name: datanode02
+    hostname: datanode02
+    ports:
+      - "49600:9864"
+      - "49601:9866" 
+      - "49602:9867"
+      - "49603:8040"
+      - "49604:8042"
+
+  resourcemanager01:
+    image: resourcemanager
+    container_name: resourcemanager01
+    hostname: resourcemanager01
+    ports:
+      - "8088:8088"
+      - "8032:8032"
+      - "8050:8050"
+      - "8033:8033"
+      - "8030:8030"
+      - "8031:8031"
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 15s
+
+  namenode01:
+    image: hadoop-namenode
+    container_name: namenode01
+    hostname: namenode01
+    command: ["/start.sh", "active"]
+    ports:
+      - "9870:9870" # namenode web UI
+      - "49500:49500" # rpc port
+      - "8019:8019" # zkfc port
+    depends_on:
+      dummy_container:
+        condition: service_healthy
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
+
+  dummy_container:
+    image: dummy
+    container_name: dummy_container
+    hostname: dummy_container
+    healthcheck:
+      test: "/healthcheckNN01.sh &"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    restart: on-failure:5
+
+  zeppelin:
+    image: zeppelin
+    container_name: zeppelin
+    hostname: zeppelin
+    ports:
+      - "9097:8080"
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
+
+  datanode03:
+    <<: *datanode_base
+    container_name: datanode03
+    hostname: datanode03
+    ports:
+      - "49610:9864"
+      - "49611:9866" 
+      - "49612:9867"
+      - "49613:8040"
+      - "49614:8042"
+
+networks:
+  bridge:

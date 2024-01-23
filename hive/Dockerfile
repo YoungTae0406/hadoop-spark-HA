@@ -11,19 +11,16 @@ RUN wget https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-java-
 
 # hive 
 RUN wget $HIVE_URL
-RUN tar -xvzf $HIVE_FILE_NAME.tar.gz && rm $HIVE_FILE_NAME.tar.gz
-RUN mv $HIVE_FILE_NAME /opt
+RUN tar -xvzf apache-$HIVE_FILE_NAME-bin.tar.gz && rm apache-$HIVE_FILE_NAME-bin.tar.gz
+RUN mv apache-$HIVE_FILE_NAME-bin /opt
 
-RUN ln -s /opt/$HIVE_FILE_NAME /opt/hive
+RUN ln -s /opt/apache-$HIVE_FILE_NAME-bin /opt/hive
 ENV HIVE_HOME=/opt/hive
 
 RUN ln -s $HIVE_HOME/etc/hive /etc/hive
 ENV HIVE_CONF_DIR=/etc/hive
 
-RUN mkdir -p "${HIVE_HOME}/hcatalog/var/log" && \
-    mkdir -p "${HIVE_HOME}/var/log" && \
-    chmod 777 "${HIVE_HOME}/hcatalog/var/log" && \ 
-    chmod 777 "${HIVE_HOME}/var/log" 
+RUN mkdir $HIVE_HOME/log
 
 ENV PATH ="${PATH}:${HIVE_HOME}/bin"
 ENV HADOOP_CLASSPATH="${HADOOP_CLASSPATH}:${HIVE_HOME}/lib/*"

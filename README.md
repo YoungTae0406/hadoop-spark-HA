@@ -3,7 +3,8 @@
     - Standby -> Active : hdfs haadmin -transitionToActive nn1 --forcemanual
     - Active -> Standby : hdfs haadmin -transitionToStandby nn2 --forcemanual
     - namenode가 클러스터와 통신하는지 확인 : hdfs dfsadmin -report
-    - RM 상태 확인 : yarn rmadmin -getAllServiceState
+    - RM HA 상태 확인 : yarn rmadmin -getAllServiceState
+    - yarn 클러스터 상태 확인 : yarn node -list 
 
 $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
 이렇게 쓰여진 명령어와
@@ -37,20 +38,43 @@ tail -f /dev/null
     - Spark MASTER_PORT : 7077
     - Spark MASTER_WEBUI_PORT : 8080
     - Spark WORKER_PORT : 7000
-- 도커컴포즈에서 설정한 웹 UI 포트
-    - namenode01 9200
-    - namenode02 9201
-    - datanode01 8900
-    - datanode02 8901
-    - datanode03 8902
-    - datanode04 8903
-    - spakr-master 9050
-    - spark-worker1 9051
-    - sprk-worker2 9052
-    - resourcemanager01 9100
-    - resourcemanager02 9101
-    - sparkhistoryserver 9093
-    - zookeeper(web ui 포트는 아님) 2181
+
+- zookeeper 포트
+    - 2181 : 클라이언트가 서버에 연결하는 데 사용하는 포트
+    이 포트로 zookeeper 앙상블과 통신함.
+    - 2888 : 앙상블 내에서 리더와 팔로워 간의 통신에 사용됨.
+    - 3888 : 서버 간 리더 선출을 위해 사용되는 포트
+- journal 포트
+    - 8485 : journalnode간의 통신을 위한 rpc 포트
+    - 8480 : http 포트
+    - 8481 : https 포트
+- namenode 포트
+    - 8019 : zkfc port
+    - 8020 : rpc 포트
+    - 9870 : http 포트
+    - 9871 : https 포트
+    - 50100 : backup 포트
+    - 50105 : backup http 포트
+- datanode 포트
+    - 9864 : http 포트
+    - 9865 : https 포트
+    - 9866 : 데이터 블록을 읽고 쓰기 위해 namenode와 클라이언트와 통신
+    - 9867 : datanode가 namenode와 상호작용하는 ipc 포트
+- resourcemanager 포트
+    - 8032 : rpc 포트
+    - 8030 : 스케줄러 인터페이스 포트
+    - 8033 : 관리자 인터페이스 포트 (클러스터 설정 변경, 상태 업데이트, 감시 작업)
+    - 8050 : ipc 포트. nodemanager와 am와 통신
+    - 8088 : http 포트
+    - 8031 : resource-tracker 포트
+    - 8090 : https 포트
+- nodemanager 포트
+    - 8040 : 로컬라이즈 포트. 노드매니저가 컨테이너에 리소스를 제공하는데 사용함
+    - 8042 : 웹 포트
+- yarntimeline 포트
+    - 10200 : This is default address for the timeline server to start the RPC server.
+    - 8188 : http port
+    - 8190 : https port
 - Hadoop 파일경로
     - HADOOP_HOME : /opt/hadoop
     - HADOOP_CONF_DIR : /etc/hadoop
@@ -61,3 +85,9 @@ tail -f /dev/null
     - $HADOOP_HOME/yarn/data (nm)
     - $HADOOP_HOME/dfs/journal (journal)
     - RM의 state store : $HADOOP_HOME/yarn/system/rmstore
+
+자주 보는 에러
+proceed formatting /hadoop-ha/ (Y or N) ?
+- zookeeper의 znode 와 관련한 에러
+
+Re-format filesystem in QJM to [10.10.5.1:8485, 10.10.5.2:8485, 10.10.5.3:8485] ? (Y or N) Invalid input:

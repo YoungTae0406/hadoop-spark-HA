@@ -30,16 +30,15 @@ SPARK_WORKLOAD="master"
 # SPARK_WORKER_LOG : 워커의 로그 출력 파일
 # SPARK_MASTER : 마스터 노드의 주소 워커 노드는 이 주소를 사용해 마스터와 연결함
 # SPARK_WORKLOAD : 클러스터 내에서 노드의 역할
+
 EXPOSE 8080 7077 7000
 
 RUN mkdir -p $SPARK_LOG_DIR && \
-mkdir -p /opt/spark/eventLog && \
-touch $SPARK_MASTER_LOG && \
-touch $SPARK_WORKER_LOG && \
-ln -sf /dev/stdout $SPARK_MASTER_LOG && \
-ln -sf /dev/stdout $SPARK_WORKER_LOG
-
-HEALTHCHECK --interval=30s --timeout=20s --start-period=15s --retries=5 CMD curl -f http://localhost:8080/
+mkdir -p /opt/spark/eventLog
+#touch $SPARK_MASTER_LOG && \
+#touch $SPARK_WORKER_LOG && \
+#ln -sf /dev/stdout $SPARK_MASTER_LOG && \
+#ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 # spark config file
 ADD spark-defaults.conf $SPARK_HOME/conf

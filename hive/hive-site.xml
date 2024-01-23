@@ -1,6 +1,4 @@
 <configuration>
-
-    <!--Where in HDFS we're going to store table files.-->
     <property>
         <name>hive.metastore.warehouse.dir</name>
         <value>/opt/hive/warehouse</value>
@@ -17,8 +15,7 @@
         <name>javax.jdo.option.ConnectionPassword</name>
         <value>hive</value>
     </property>
-
-    <!--    https://cwiki.apache.org/confluence/display/Hive/Hive+on+Spark%3A+Getting+Started -->
+    <!--hive spark-->
     <property>
         <name>hive.execution.engine</name>
         <value>spark</value>
@@ -29,7 +26,7 @@
         <value>hdfs://master:9000/spark-jars/*</value>
     </property>
     -->
-    <!-- To be able to execute Hive queries from Zeppelin -->
+    <!-- hive zeppelin -->
     <property>
         <name>hive.server2.enable.doAs</name>
         <value>false</value>
@@ -38,4 +35,22 @@
             Hive operations as the user making the calls to it.
         </description>
     </property>
+    <!--hive ha-->
+    <property>
+        <name>hive.server2.support.dynamic.service.discovery</name>
+        <value>true</value>
+        <description>Enable dynamic service discovery for HiveServer2</description>
+    </property>
+
+    <property>
+        <name>hive.server2.zookeeper.namespace</name>
+        <value>hiveserver2</value>
+        <description>ZooKeeper namespace for HiveServer2 dynamic service discovery</description>
+    </property>
+
+    <property>
+        <name>hive.server2.zookeeper.quorum</name>
+        <value>zookeeper01:2181,zookeeper02:2181,zookeeper03:2181</value> 
+    </property>
+
 </configuration>

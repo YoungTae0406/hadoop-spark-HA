@@ -29,12 +29,6 @@ services:
         condition: service_healthy
     networks:
       - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
-      interval: 30s
-      timeout: 20s
-      retries: 7
-      start_period: 30s
     
   namenode02:
     image: hadoop-namenode
@@ -60,12 +54,6 @@ services:
         condition: service_healthy
     networks:
       - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
-      interval: 30s
-      timeout: 20s
-      retries: 7
-      start_period: 30s
 
   zeppelin:
     image: zeppelin
@@ -75,19 +63,23 @@ services:
       - "9097:8080"
     networks:
       - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 20s
-      retries: 7
-      start_period: 30s
 
+  hive01:
+    image: hadoop-hive
+    container_name: hive01
+    hostname: hive01
+    networks:
+      - bridge
+    
   yarntimeline:
     image: yarntimeline
     container_name: yarntimeline
     hostname: yarntimeline
     ports:
       - "9096:8188"
+      - "10200:10200" 
+      - "8188:8188" 
+      - "8190:8190"
     networks:
       - bridge
 
@@ -142,43 +134,31 @@ services:
     hostname: datanode03
     ports:
       - "8902:9864"
-
-  datanode04:
-    <<: *datanode_base
-    container_name: datanode04
-    hostname: datanode04
-    ports:
-      - "8903:9864"
+  
+  #datanode04:
+  #  <<: *datanode_base
+  #  container_name: datanode04
+  #  hostname: datanode04
+  #  ports:
+  #    - "8903:9864"
 
   resourcemanager01:
     image: resourcemanager
     container_name: resourcemanager01
     hostname: resourcemanager01
     ports:
-      - "9100:8088"
+      - "9101:8088"
     networks:
       - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
-      interval: 30s
-      timeout: 20s
-      retries: 7
-      start_period: 15s
 
   resourcemanager02:
     image: resourcemanager
     container_name: resourcemanager02
     hostname: resourcemanager02
     ports:
-      - "9101:8088"
+      - "9102:8088"
     networks:
       - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
-      interval: 30s
-      timeout: 20s
-      retries: 10
-      start_period: 15s
   
   sparkhistoryserver:
     image: spark-historyserver
@@ -242,7 +222,7 @@ volumes:
   datanode01:
   datanode02:
   datanode03:
-  datanode04:
+  #datanode04:
 
 networks:
   bridge:

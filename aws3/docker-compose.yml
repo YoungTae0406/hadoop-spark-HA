@@ -1,0 +1,40 @@
+version: "3.7"
+
+# aws3.mofl
+x-datanode_base: &datanode_base
+  image: hadoop-datanode
+  networks:
+    - bridge
+  restart: on-failure:3
+
+services:
+  journal03:
+    image: hadoop-journalnode
+    container_name: journal03
+    hostname: journal03
+    ports:
+      - "8480:8480"
+      - "8485:8485"
+    networks:
+      - bridge
+    restart: on-failure:3
+
+  zookeeper03:
+    image: hadoop-zookeeper
+    container_name: zookeeper03
+    hostname: zookeeper03
+    networks:
+      - bridge
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=${AWS1HOSTNAME}:2888:3888;2181 server.2=${AWS2HOSTNAME}:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: ruok, stat, mntr
+    restart: always
+    command: zkServer.sh start-foreground
+
+networks:
+  bridge:

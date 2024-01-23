@@ -11,5 +11,8 @@ docker build -t hadoop-journalnode  ./journalnode
 docker build -t hadoop-zookeeper ./zookeeper
 docker build -t yarntimeline ./yarntimelineserver
 docker build -t zeppelin ./zeppelin
+docker build -t hadoop-hive ./hive
+
+docker build -t dummy ./dummy
 docker-compose up -d
 

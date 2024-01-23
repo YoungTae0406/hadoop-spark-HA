@@ -5,18 +5,25 @@
     <name>dfs.namenode.http-address</name>
     <value>0.0.0.0:9870</value>
   </property>
-    <property>
+  <property>
     <name>dfs.namenode.http-bind-host</name>
     <value>0.0.0.0</value>
   </property>
+
+  <property>
+    <name>dfs.namenode.rpc-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  
   <property>
     <name>dfs.namenode.name.dir</name> <!--메타데이터 저장 경로-->
     <value>file:///opt/hadoop/dfs/name</value>
   </property>
   <property>
     <name>dfs.blocksize</name>
-    <value>134217728</value>
+    <value>67108864</value>
   </property>
+  <!--134217728이 128mb, 67108864가 64mb-->
 
   <!--HA config-->
   <property>
@@ -27,43 +34,53 @@
     <name>dfs.ha.namenodes.hadoop-cluster</name>
     <value>nn1, nn2</value>
   </property> <!-- namenode의 active/standby-->
-
-  <!--rpc-address -->
+  <!--aws1.mofl-->
+  <property>
+    <name>dfs.ha.namenode.id</name>
+    <value>nn1</value>
+  </property>
+  <!--default port 8020-->
   <property>
     <name>dfs.namenode.rpc-address.hadoop-cluster.nn1</name>
-    <value>namenode01:8020</value>
+    <value>10.10.5.4:49500</value>
     <!--dfs의 메타데이터 작업을 위한 통신채널-->
   </property>
   <property>
     <name>dfs.namenode.rpc-address.hadoop-cluster.nn2</name>
-    <value>namenode02:8020</value>
+    <value>10.10.5.5:50500</value>
   </property>
   <property>
-    <name>dfs.namenode.http-address.hadoop-cluster.nn1</name>
-    <value>namenode01:9870</value>
+    <name>dfs.namenode.rpc-bind-host.hadoop-cluster.nn1</name>
+    <value>0.0.0.0</value>
   </property>
   <property>
-    <name>dfs.namenode.http-address.hadoop-cluster.nn2</name>
-    <value>namenode02:9870</value>
+    <name>dfs.namenode.rpc-bind-host.hadoop-cluster.nn2</name>
+    <value>0.0.0.0</value>
   </property>
   
   <property>
+    <name>dfs.namenode.http-address.hadoop-cluster.nn1</name>
+    <value>10.10.5.4:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.hadoop-cluster.nn2</name>
+    <value>10.10.5.5:9870</value>
+  </property>
+  
+  <!--
+    <property>
     <name>dfs.ha.fencing.methods</name>
     <value>sshfence
         shell(/bin/true)
     </value>
   </property>
+  -->
   <!--
   <property>
       <name>dfs.ha.fencing.ssh.private-key-files</name>
       <value>~/.ssh/id_dsa</value>
   </property>
   -->
-  <property>
-    <name>dfs.client.use.datanode.hostname</name>
-    <value>true</value>
-  </property>
-  
   
   <property>
     <name>dfs.client.failover.proxy.provider.hadoop-cluster</name>
@@ -83,27 +100,43 @@
   </property>
   <property>
     <name>dfs.block.size</name>
-    <value>134217728</value>
-  </property>  
-  <property>
+    <value>67108864</value>
+  </property>
+  
+  <!--
+    <property>
     <name>dfs.datanode.use.datanode.hostname</name>
     <value>true</value>
-  </property>
+    </property> 
   <property>
-        <name>dfs.replication</name>
-        <value>3</value>
-    </property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+  -->
+  
+  <property>
+      <name>dfs.replication</name>
+      <value>2</value>
+  </property>
   <!--클라이언트와 다른 데이터 노드들은 데이터 노드를 식별할 때 IP주소 대신
   호스트 이름을 사용하게끔 했음-->
 
   <!--journalnode-->
+  <property>
+    <name>dfs.journalnode.rpc-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  <property>
+    <name>dfs.journalnode.http-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
   <property>
     <name>dfs.journalnode.edits.dir</name>
     <value>/opt/hadoop/dfs/journal</value>
   </property>
   <property>
     <name>dfs.namenode.shared.edits.dir</name>
-    <value>qjournal://journal01:8485;journal02:8485;journal03:8485/hadoop-cluster;</value> 
+    <value>qjournal://10.10.5.1:8485;10.10.5.2:8485;10.10.5.3:8485/hadoop-cluster;</value> 
     <!--journalnode URI 주소 적거야함-->
   </property>
 

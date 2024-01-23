@@ -1,0 +1,89 @@
+version: "3.7"
+
+x-datanode_base: &datanode_base
+  image: hadoop-datanode
+  networks:
+    - bridge
+  restart: on-failure:3
+
+services:
+  namenode02:
+    image: hadoop-namenode
+    container_name: namenode02
+    hostname: namenode02
+    command: ["/start.sh", "standby"]
+    ports:
+      - "9870:9870" # namenode web UI
+      - "50500:50500" # rpc port
+      - "8019:8019" # zkfc port
+    depends_on:
+      dummy_container:
+        condition: service_healthy
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9870/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
+
+  resourcemanager02:
+    image: resourcemanager
+    container_name: resourcemanager02
+    hostname: resourcemanager02
+    ports:
+      - "8088:8088"
+      - "8032:8032"
+      - "8050:8050"
+      - "8033:8033"
+      - "8030:8030"
+      - "8031:8031"
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/"]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+      start_period: 15s
+
+  datanode01:
+    <<: *datanode_base
+    container_name: datanode01
+    hostname: datanode01
+    ports:
+      - "50100:9864"
+      - "50101:9866" 
+      - "50102:9867"
+      - "50103:8040"
+      - "50104:8042"
+
+  zeppelin:
+    image: zeppelin
+    container_name: zeppelin
+    hostname: zeppelin
+    ports:
+      - "50150:8080"
+    networks:
+      - bridge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 20s
+      retries: 7
+      start_period: 30s
+
+  dummy_container:
+    image: dummy
+    container_name: dummy_container
+    hostname: dummy_container
+    healthcheck:
+      test: "/healthcheckNN02.sh &"
+      interval: 15s
+      timeout: 10s
+      retries: 3
+    restart: on-failure:5
+
+networks:
+  bridge:
