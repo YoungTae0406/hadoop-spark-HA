@@ -7,7 +7,6 @@ RUN mkdir -p $HADOOP_HOME/yarn/data
 
 # 9864 : datanode web ui port
 # 8042 : yarn nodemanager web ui port
-
 EXPOSE 9864 8042 
 
 ADD start.sh /start.sh

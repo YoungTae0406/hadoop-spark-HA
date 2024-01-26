@@ -1,23 +1,12 @@
 version: "3.7"
 
-x-datanode_base: &datanode_base
-  image: hadoop-datanode
-  networks:
-    - bridge
-  restart: on-failure:3
+#x-datanode_base: &datanode_base
+#  image: hadoop-datanode
+#  networks:
+#    - bridge
+#  restart: on-failure:3
 
 services:
-  datanode02:
-    <<: *datanode_base
-    container_name: datanode02
-    hostname: datanode02
-    ports:
-      - "49600:9864"
-      - "49601:9866" 
-      - "49602:9867"
-      - "49603:8040"
-      - "49604:8042"
-
   resourcemanager01:
     image: resourcemanager
     container_name: resourcemanager01
@@ -30,7 +19,7 @@ services:
       - "8030:8030"
       - "8031:8031"
     networks:
-      - bridge
+      hadoop_default: {}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/"]
       interval: 30s
@@ -46,23 +35,29 @@ services:
     ports:
       - "9870:9870" # namenode web UI
       - "49500:49500" # rpc port
-      - "8019:8019" # zkfc port
+      - "49501:49501" # zkfc port
+      - "2181:2181" # zookeeper
+      - "8485:8485" # journal
+
     depends_on:
       dummy_container:
         condition: service_healthy
     networks:
-      - bridge
+      hadoop_default: {}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9870/"]
       interval: 30s
       timeout: 20s
       retries: 7
       start_period: 30s
+    #network_mode: host
 
   dummy_container:
     image: dummy
     container_name: dummy_container
     hostname: dummy_container
+    networks:
+      hadoop_default: {}
     healthcheck:
       test: "/healthcheckNN01.sh &"
       interval: 10s
@@ -76,8 +71,11 @@ services:
     hostname: zeppelin
     ports:
       - "9097:8080"
+      - "5335:5335"
+      - "18080:18080"
+      - "4040:4040"
     networks:
-      - bridge
+      hadoop_default: {}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/"]
       interval: 30s
@@ -85,8 +83,25 @@ services:
       retries: 7
       start_period: 30s
 
+  datanode02:
+    image: hadoop-datanode
+    container_name: datanode02
+    hostname: datanode02
+    ports:
+      - "49801:49801"
+      - "49800:49800" 
+      - "49802:49802"
+      - "49603:8040"
+      - "49604:8042"
+    environment:
+      - DATANODE02_ADDRESS=${DATANODE02_ADDRESS}
+      - DATANODE02_HTTP=${DATANODE02_HTTP}
+      - DATANODE02_IPC=${DATANODE02_IPC}
+    networks:
+      hadoop_default: {}
+
   datanode03:
-    <<: *datanode_base
+    image: hadoop-datanode
     container_name: datanode03
     hostname: datanode03
     ports:
@@ -95,6 +110,15 @@ services:
       - "49612:9867"
       - "49613:8040"
       - "49614:8042"
+    networks:
+      hadoop_default: {}
 
 networks:
-  bridge:
+  hadoop_default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.80.0.0/16
+          gateway: 172.80.0.1
+    

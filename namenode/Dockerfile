@@ -6,6 +6,7 @@ HEALTHCHECK --interval=30s --timeout=20s --retries=7 --start-period=30s CMD curl
 # FsImage : block replication 개수를 mapping 시켜놓은 정보
 RUN mkdir $HADOOP_HOME/dfs/name
 
+#ADD allowed_hosts.txt $HADOOP_HOME
 ADD start.sh /start.sh
 RUN chmod a+x /start.sh
 

@@ -15,7 +15,11 @@ services:
     ports:
       - "9870:9870" # namenode web UI
       - "50500:50500" # rpc port
-      - "8019:8019" # zkfc port
+      - "50501:49501" # zkfc port
+      - "2181:2181" # zookeeper
+      - "8485:8485" # journal
+      #- "9867:9867" # datanode
+      #- "9866:9866" # datanode
     depends_on:
       dummy_container:
         condition: service_healthy
@@ -58,21 +62,6 @@ services:
       - "50102:9867"
       - "50103:8040"
       - "50104:8042"
-
-  zeppelin:
-    image: zeppelin
-    container_name: zeppelin
-    hostname: zeppelin
-    ports:
-      - "50150:8080"
-    networks:
-      - bridge
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 20s
-      retries: 7
-      start_period: 30s
 
   dummy_container:
     image: dummy

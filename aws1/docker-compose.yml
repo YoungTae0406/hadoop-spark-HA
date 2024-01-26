@@ -34,7 +34,8 @@ services:
       ZOO_4LW_COMMANDS_WHITELIST: ruok, stat, mntr
     restart: always
     command: zkServer.sh start-foreground
-    
-
+    #volumes:
+    #  - /home/ubuntu/hadoop/zoo.cfg:/conf/zoo.cfg
 networks:
   bridge:
+    

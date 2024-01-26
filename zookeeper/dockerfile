@@ -4,7 +4,7 @@ HEALTHCHECK --interval=60s CMD echo ruok | nc localhost 2181 | grep imok || exit
 # interval : 30s
 RUN apt-get update && \
     apt-get install -y vim
-
+#ADD zoo.cfg /conf/zoo.cfg
 
 #RUN mkdir /opt/zookeeper && \
 #    cd /opt/zookeeper && \

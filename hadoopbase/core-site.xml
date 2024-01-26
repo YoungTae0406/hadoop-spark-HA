@@ -15,4 +15,5 @@
     <name>hadoop.tmp.dir</name>
     <value>/opt/hadoop/dfs/temp</value>
   </property>
+
 </configuration>

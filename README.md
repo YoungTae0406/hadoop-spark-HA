@@ -1,10 +1,15 @@
+nn이 다른 호스트 서버에 배치될 때 설정파일의 id 부분을 명시적으로 설정해줘야함.
+
 - 하둡 명령어
     - namenode Service State 확인 : hdfs haadmin -getAllServiceState
     - Standby -> Active : hdfs haadmin -transitionToActive nn1 --forcemanual
     - Active -> Standby : hdfs haadmin -transitionToStandby nn2 --forcemanual
     - namenode가 클러스터와 통신하는지 확인 : hdfs dfsadmin -report
     - RM HA 상태 확인 : yarn rmadmin -getAllServiceState
-    - yarn 클러스터 상태 확인 : yarn node -list 
+    - yarn 클러스터 상태 확인 : yarn node -list
+    - yarn applicatino 상태 확인 : yarn application -list
+    - yarn 완료된 application 확인 : yarn application        -list -appStates FINISHED
+    
 
 $HADOOP_HOME/bin/hdfs --config $HADOOP_CONF_DIR namenode
 이렇게 쓰여진 명령어와
@@ -23,6 +28,7 @@ tail -f /dev/null
     --name : Spark UI에 표시될 애플리케이션의 이름을 지정
     --driver-memory
     --py-files 
+
 
 - Hadoop 서비스들이 사용하는 기본 웹 UI 포트
     - NameNode: 9870 (HTTP), 9871 (HTTPS)
@@ -91,3 +97,6 @@ proceed formatting /hadoop-ha/ (Y or N) ?
 - zookeeper의 znode 와 관련한 에러
 
 Re-format filesystem in QJM to [10.10.5.1:8485, 10.10.5.2:8485, 10.10.5.3:8485] ? (Y or N) Invalid input:
+
+로그 경로
+namenode : /opt/hadoop/logs/
