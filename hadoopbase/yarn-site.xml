@@ -1,4 +1,5 @@
 <configuration>
+   <!--node manager-->
  <property>
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce_shuffle</value>
@@ -7,11 +8,6 @@
     <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
     <value>org.apache.hadoop.mapred.ShuffleHandler</value>
  </property>
-   <property>
-    <name>yarn.resourcemanager.bind-host</name>
-    <value>0.0.0.0</value>
- </property>
- 
  <property>
    <name>yarn.nodemanager.vmem-check-enabled</name>
    <value>false</value>
@@ -21,10 +17,6 @@
    <value>5</value>
  </property>
  <property>
-   <name>yarn.nodemanager.bind-host</name>
-   <value>0.0.0.0</value>
- </property>
- <property>
     <name>yarn.nodemanager.local-dirs</name>
     <value>/opt/hadoop/yarn/data</value>
  </property>
@@ -32,6 +24,19 @@
     <name>yarn.nodemanager.logs-dirs</name>
 	 <value>/opt/hadoop/yarn/data</value>
  </property>
+ <property>
+   <name>yarn.nodemanager.bind-host</name>
+   <value>0.0.0.0</value>
+ </property>
+ <property>
+  <name>yarn.nodemanager.remote-app-log-dir</name>
+  <value>/opt/hadoop/yarn/data</value>
+</property>
+<property>
+  <name>yarn.nodemanager.distributed-scheduling.enabled</name>
+  <value>true</value>
+</property>
+
  
  <!--yarn federation-->
 <property>
@@ -52,11 +57,6 @@
    <name>yarn.resourcemanager.ha.rm-ids</name>
    <value>rm1,rm2</value>
 </property>
- 
-<property>
-   <name>yarn.resourcemanager.ha.id</name>
-   <value>rm1</value>
-</property>
 
 <property>  <!--호스트 이름 지정-->
    <name>yarn.resourcemanager.hostname.rm1</name>
@@ -75,6 +75,10 @@
    <value>10.10.5.5:8032</value>
 </property>
 
+<property>
+    <name>yarn.resourcemanager.bind-host</name>
+    <value>0.0.0.0</value>
+ </property>
 <property>
    <name>yarn.client.failover-retries</name>
    <value>2</value>
@@ -96,4 +100,9 @@
    <name>yarn.resourcemanager.fs.state-store.uri</name>
    <value>/opt/hadoop/yarn/system/rmstore</value>
 </property> <!--저 경로에 상태 정보가 지속적으로 저장됨.-->
+<property>
+  <name>yarn.scheduler.include-port-in-node-name</name>
+  <value>true</value>
+</property>
+
 </configuration>

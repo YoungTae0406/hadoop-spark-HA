@@ -9,14 +9,12 @@ RUN wget https://dlcdn.apache.org/zeppelin/zeppelin-$ZEPPELIN_VERSION/$ZEPPELIN_
 RUN tar -xvzf $ZEPPELIN_FILE_NAME.tgz && rm $ZEPPELIN_FILE_NAME.tgz
 
 ADD zeppelin-site.xml /$ZEPPELIN_FILE_NAME/conf
-
+ADD zeppelin-env.sh /$ZEPPELIN_FILE_NAME/conf 
 ADD start.sh /start.sh
 RUN chmod 700 /start.sh
 
 ENV ZEPPELIN_HOME=/zeppelin-0.10.1-bin-all
-ENV PYSPARK_PYTHON=python3
-ENV PYTHONPATH=python3
-ENV SPARK_MASTER=yarn
+
 HEALTHCHECK --interval=30s --timeout=20s --start-period=15s --retries=5 CMD curl -f http://localhost:8080/
 
 # 8080 : zeppelin web UI port

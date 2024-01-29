@@ -1,0 +1,10 @@
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_HOME=/opt/hadoop
+export YARN_CONF_DIR=/etc/hadoop
+export HADOOP_CONF_DOR=/etc/hadoop
+export SPARK_HOME=/opt/spark
+export SPARK_MASTER=yarn
+export ZEPPLIN_PORT=8080
+export PYTHONPATH=/usr/bin/python3
+export PYSPARK_PYTHON=/usr/bin/python3
+export PYSPARK_DRIVER_PYTHON=/usr/bin/python3

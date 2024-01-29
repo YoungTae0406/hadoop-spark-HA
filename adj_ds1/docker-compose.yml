@@ -1,11 +1,5 @@
 version: "3.7"
 
-x-datanode_base: &datanode_base
-  image: hadoop-datanode
-  networks:
-    - bridge
-  restart: on-failure:3
-
 services:
   namenode02:
     image: hadoop-namenode
@@ -18,13 +12,14 @@ services:
       - "50501:49501" # zkfc port
       - "2181:2181" # zookeeper
       - "8485:8485" # journal
-      #- "9867:9867" # datanode
-      #- "9866:9866" # datanode
+
     depends_on:
       dummy_container:
         condition: service_healthy
     networks:
       - bridge
+    environment:
+      - NAMENODE_ID=${NAMENODE02_ID}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9870/"]
       interval: 30s
@@ -43,6 +38,8 @@ services:
       - "8033:8033"
       - "8030:8030"
       - "8031:8031"
+    environment:
+      - RM_ID=${RM02_ID}
     networks:
       - bridge
     healthcheck:
@@ -53,15 +50,46 @@ services:
       start_period: 15s
 
   datanode01:
-    <<: *datanode_base
     container_name: datanode01
     hostname: datanode01
+    image: hadoop-datanode
+    networks:
+    - bridge
+    restart: on-failure:3
     ports:
-      - "50100:9864"
-      - "50101:9866" 
-      - "50102:9867"
-      - "50103:8040"
-      - "50104:8042"
+      - "50101:50101"
+      - "50100:50100" 
+      - "50102:50102"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50101/"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 20s
+    
+    environment:
+      - DATANODE_ADDRESS=${DATANODE01_ADDRESS}
+      - DATANODE_HTTP=${DATANODE01_HTTP}
+      - DATANODE_IPC=${DATANODE01_IPC}
+
+  nodemgr02:
+    image: hadoop-nm
+    container_name: nodemgr02
+    hostname: nodemgr02
+    ports:
+      - "50150:50150" # ipc
+      - "50151:50151" # http
+    environment:
+      - NODEMGR_IPC=${NODEMGR02_IPC}
+      - NODEMGR_HTTP=${NODEMGR02_HTTP}
+      - NODEMGR_HOSTNAME=${NODEMGR02_HOSTNAME}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8040/"]
+      interval: 1m
+      timeout: 30s
+      retries: 5
+      start_period: 20s
 
   dummy_container:
     image: dummy

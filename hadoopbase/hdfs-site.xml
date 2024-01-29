@@ -35,10 +35,12 @@
     <value>nn1, nn2</value>
   </property> <!-- namenode의 active/standby-->
   <!--namenode마다 다른 id가 부여되야함.-->
-  <property>
+  <!-- 
+    <property>
     <name>dfs.ha.namenode.id</name>
     <value>nn1</value>
-  </property>
+  </property> -->
+ 
   <!--default port 8020-->
   <property>
     <name>dfs.namenode.rpc-address.hadoop-cluster.nn1</name>

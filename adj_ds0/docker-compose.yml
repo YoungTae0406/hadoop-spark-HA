@@ -18,6 +18,8 @@ services:
       - "8033:8033"
       - "8030:8030"
       - "8031:8031"
+    environment:
+      - RM_ID=${RM01_ID}
     networks:
       hadoop_default: {}
     healthcheck:
@@ -38,7 +40,8 @@ services:
       - "49501:49501" # zkfc port
       - "2181:2181" # zookeeper
       - "8485:8485" # journal
-
+    environment:
+      - NAMENODE_ID=${NAMENODE01_ID}
     depends_on:
       dummy_container:
         condition: service_healthy
@@ -91,12 +94,17 @@ services:
       - "49801:49801"
       - "49800:49800" 
       - "49802:49802"
-      - "49603:8040"
-      - "49604:8042"
+
     environment:
-      - DATANODE02_ADDRESS=${DATANODE02_ADDRESS}
-      - DATANODE02_HTTP=${DATANODE02_HTTP}
-      - DATANODE02_IPC=${DATANODE02_IPC}
+      - DATANODE_ADDRESS=${DATANODE02_ADDRESS}
+      - DATANODE_HTTP=${DATANODE02_HTTP}
+      - DATANODE_IPC=${DATANODE02_IPC}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:49801/"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 20s
     networks:
       hadoop_default: {}
 
@@ -105,11 +113,40 @@ services:
     container_name: datanode03
     hostname: datanode03
     ports:
-      - "49610:9864"
-      - "49611:9866" 
-      - "49612:9867"
-      - "49613:8040"
-      - "49614:8042"
+      - "49601:49601"
+      - "49600:49600"
+      - "49602:49602"
+
+    environment:
+      - DATANODE_ADDRESS=${DATANODE03_ADDRESS}
+      - DATANODE_HTTP=${DATANODE03_HTTP}
+      - DATANODE_IPC=${DATANODE03_IPC}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:49601/"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 20s
+    networks:
+      hadoop_default: {}
+  
+  nodemgr01:
+    image: hadoop-nm
+    container_name: nodemgr01
+    hostname: nodemgr01
+    ports:
+      - "49650:49650"
+      - "49651:49651"
+    environment:
+      - NODEMGR_IPC=${NODEMGR01_IPC}
+      - NODEMGR_HTTP=${NODEMGR01_HTTP}
+      - NODEMGR_HOSTNAME=${NODEMGR01_HOSTNAME}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8040/"]
+      interval: 1m
+      timeout: 30s
+      retries: 5
+      start_period: 20s
     networks:
       hadoop_default: {}
 

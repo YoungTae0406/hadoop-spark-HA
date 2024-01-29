@@ -29,7 +29,6 @@ tail -f /dev/null
     --driver-memory
     --py-files 
 
-
 - Hadoop 서비스들이 사용하는 기본 웹 UI 포트
     - NameNode: 9870 (HTTP), 9871 (HTTPS)
     - NameNode: 8020 (metadata 작업 port)
@@ -68,15 +67,16 @@ tail -f /dev/null
     - 9867 : datanode가 namenode와 상호작용하는 ipc 포트
 - resourcemanager 포트
     - 8032 : rpc 포트
-    - 8030 : 스케줄러 인터페이스 포트
+    - 8030 : 스케줄러 포트, client나 am이 rm의 스케쥴러와 통신
     - 8033 : 관리자 인터페이스 포트 (클러스터 설정 변경, 상태 업데이트, 감시 작업)
     - 8050 : ipc 포트. nodemanager와 am와 통신
     - 8088 : http 포트
     - 8031 : resource-tracker 포트
     - 8090 : https 포트
 - nodemanager 포트
-    - 8040 : 로컬라이즈 포트. 노드매니저가 컨테이너에 리소스를 제공하는데 사용함
+    - 8040 : 로컬라이즈 포트. 노드매니저가 컨테이너에 리소스를 제공하는데 사용함 기본적으로 동적으로 할당됨 ipc 포트
     - 8042 : 웹 포트
+    - 8048 : timeline과 통신하는 포트
 - yarntimeline 포트
     - 10200 : This is default address for the timeline server to start the RPC server.
     - 8188 : http port
@@ -91,12 +91,6 @@ tail -f /dev/null
     - $HADOOP_HOME/yarn/data (nm)
     - $HADOOP_HOME/dfs/journal (journal)
     - RM의 state store : $HADOOP_HOME/yarn/system/rmstore
-
-자주 보는 에러
-proceed formatting /hadoop-ha/ (Y or N) ?
-- zookeeper의 znode 와 관련한 에러
-
-Re-format filesystem in QJM to [10.10.5.1:8485, 10.10.5.2:8485, 10.10.5.3:8485] ? (Y or N) Invalid input:
 
 로그 경로
 namenode : /opt/hadoop/logs/

@@ -2,7 +2,18 @@
 NAMENODE_DIR=/opt/hadoop/dfs/name
 NAMENODE_ROLE=$1 
 
-echo $NAMENODE_ROLE
+HDFS_SITE=/etc/hadoop/hdfs-site.xml
+
+# hdfs-site.xml 파일 수정
+
+sed -i '/<\/configuration>/d' $HDFS_SITE
+cat >> $HDFS_SITE <<EOF
+    <property>
+      <name>dfs.ha.namenode.id</name>
+      <value>${NAMENODE_ID}</value>
+    </property>
+</configuration>
+EOF
 
 # Active NameNode 포맷
 if [ "$NAMENODE_ROLE" == "active" ]; then
